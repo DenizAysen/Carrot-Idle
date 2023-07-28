@@ -6,6 +6,7 @@ public class InputManager : MonoBehaviour
 {
     [Header("Action")]
     public static Action onCarrotClicked;
+    public static Action<Vector2> onCarrotClickedPosition;
     void Start()
     {
         
@@ -25,5 +26,6 @@ public class InputManager : MonoBehaviour
             return;
 
         onCarrotClicked?.Invoke();
+        onCarrotClickedPosition?.Invoke(hit.point);
     }
 }

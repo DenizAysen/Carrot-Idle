@@ -5,8 +5,9 @@ using TMPro;
 public class CarrotManager : MonoBehaviour
 {
     [Header("Data")]
-    [SerializeField] private double totalCarrotsCount;
-    [SerializeField] private int carrotIncrementValue;
+    [SerializeField] private double totalCarrotsCount; 
+    [SerializeField] private int frenzyModeMultiplier;
+    private int carrotIncrementValue;
 
     [Header("Elements")]
     [SerializeField] private TextMeshProUGUI carrotText;
@@ -14,7 +15,12 @@ public class CarrotManager : MonoBehaviour
     {
         LoadData();
 
+        carrotIncrementValue = 1;
+
         InputManager.onCarrotClicked += CarrotClickedCallBack;
+
+        Carrot.onFrenzyModeStarted += FrenzyModeStartedCallBack;
+        Carrot.onFrenzyModeEnded += FrenzyModeEndedCallBack;
     }
     void Start()
     {
@@ -23,7 +29,11 @@ public class CarrotManager : MonoBehaviour
     private void OnDestroy()
     {
         InputManager.onCarrotClicked -= CarrotClickedCallBack;
+
+        Carrot.onFrenzyModeStarted -= FrenzyModeStartedCallBack;
+        Carrot.onFrenzyModeEnded -= FrenzyModeEndedCallBack;
     }
+    #region CallBacks
     private void CarrotClickedCallBack()
     {
         totalCarrotsCount += carrotIncrementValue;
@@ -32,10 +42,25 @@ public class CarrotManager : MonoBehaviour
 
         SaveData();
     }
+    private void FrenzyModeStartedCallBack()
+    {
+        carrotIncrementValue = frenzyModeMultiplier;
+    }
+    private void FrenzyModeEndedCallBack()
+    {
+        carrotIncrementValue = 1;
+    }
+    #endregion
     private void UpdateCarrotText()
     {
         carrotText.text = totalCarrotsCount + " " + "Carrots!";
     }
+
+    public int GetCurrentMultiplier()
+    {
+        return carrotIncrementValue;
+    }
+    #region Data
     private void SaveData()
     {
         PlayerPrefs.SetString("Carrots", totalCarrotsCount.ToString());
@@ -46,4 +71,5 @@ public class CarrotManager : MonoBehaviour
 
        UpdateCarrotText();
     }
+    #endregion
 }
